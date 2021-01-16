@@ -195,7 +195,8 @@ PRODUCT_PACKAGES += \
     init.qcom.usb.sh \
     init.target.rc \
     ueventd.oplus.rc \
-    ueventd.qcom.rc
+    ueventd.qcom.rc \
+    logcat.rc
 
 # Kernel
 PRODUCT_ENABLE_UFFD_GC := false
