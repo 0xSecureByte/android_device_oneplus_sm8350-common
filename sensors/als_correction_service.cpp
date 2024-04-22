@@ -100,7 +100,6 @@ class TakeScreenshotCommand : public FrameworkCommand {
         captureArgs.sourceCrop = screenshot_rect;
         captureArgs.width = screenshot_rect.getWidth();
         captureArgs.height = screenshot_rect.getHeight();
-        captureArgs.useIdentityTransform = false;
         status_t ret = ScreenshotClient::captureDisplay(captureArgs, captureListener);
 
         uint8_t *out;
