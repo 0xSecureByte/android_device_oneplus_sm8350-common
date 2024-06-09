@@ -108,7 +108,7 @@
             
         </stream>
         <stream type="alarm">
-            
+            <apply effect="alarm_helper"/>          
         </stream>
         <stream type="voice_call">
             <apply effect="voice_helper"/>
