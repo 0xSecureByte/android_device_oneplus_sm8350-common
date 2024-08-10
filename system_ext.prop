@@ -4,7 +4,7 @@ persist.bluetooth.bqr.min_interval_ms=60000
 
 # Display
 debug.sf.enable_hwc_vds=1
-persist.sys.brightness.low.gamma?=true
+persist.sys.brightness.low.gamma=false
 
 # CNE
 persist.vendor.cne.feature=1
