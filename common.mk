@@ -255,6 +255,7 @@ PRODUCT_PACKAGES += \
 
 # Init
 PRODUCT_PACKAGES += \
+    charger_fw_fstab.qti \
     fstab.default \
     fstab.default.vendor_ramdisk \
     init.class_main.sh \
