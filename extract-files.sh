@@ -61,6 +61,10 @@ function blob_fixup() {
         odm/lib/liblvimfs_wrapper.so|odm/lib64/libCOppLceTonemapAPI.so|odm/lib64/libaps_frame_registration.so|vendor/lib64/libalsc.so)
             "${PATCHELF}" --replace-needed "libstdc++.so" "libstdc++_vendor.so" "${2}"
             ;;
+        odm/lib64/mediadrm/libwvdrmengine.so|odm/lib64/libwvhidl.so)
+            [ "$2" = "" ] && return 0
+            grep -q "libcrypto-v33.so" "${2}" || "${PATCHELF}" --replace-needed "libcrypto.so" "libcrypto-v33.so" "$2"
+            ;;
     esac
 }
 
