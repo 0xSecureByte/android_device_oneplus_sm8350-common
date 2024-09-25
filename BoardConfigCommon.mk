@@ -36,7 +36,7 @@ TARGET_CPU_ABI := arm64-v8a
 TARGET_CPU_VARIANT := cortex-a76
 
 TARGET_2ND_ARCH := arm
-TARGET_2ND_ARCH_VARIANT := armv8-a
+TARGET_2ND_ARCH_VARIANT := armv8-2a
 TARGET_2ND_CPU_ABI := armeabi-v7a
 TARGET_2ND_CPU_ABI2 := armeabi
 TARGET_2ND_CPU_VARIANT := cortex-a76
@@ -78,9 +78,9 @@ TARGET_SURFACEFLINGER_UDFPS_LIB := //hardware/oplus:libudfps_extension.oplus
 DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE := \
     $(COMMON_PATH)/device_framework_matrix.xml \
     hardware/qcom-caf/common/vendor_framework_compatibility_matrix.xml \
-    vendor/aosp/config/device_framework_matrix.xml
+    $(COMMON_PATH)/hidl/device_framework_matrix.xml
 DEVICE_FRAMEWORK_MANIFEST_FILE += $(COMMON_PATH)/framework_manifest.xml
-DEVICE_MATRIX_FILE := hardware/qcom-caf/common/compatibility_matrix.xml
+DEVICE_MATRIX_FILE := $(COMMON_PATH)/hidl/compatibility_matrix.xml
 DEVICE_MANIFEST_FILE := $(COMMON_PATH)/manifest.xml
 ODM_MANIFEST_FILES := $(COMMON_PATH)/manifest_odm.xml
 
@@ -88,6 +88,8 @@ ODM_MANIFEST_FILES := $(COMMON_PATH)/manifest_odm.xml
 TARGET_INIT_VENDOR_LIB := //$(COMMON_PATH):libinit_oplus
 
 # Kernel
+TARGET_NO_KERNEL_OVERRIDE := true
+TARGET_NO_KERNEL := false
 BOARD_BOOT_HEADER_VERSION := 3
 BOARD_KERNEL_BASE := 0x00000000
 BOARD_KERNEL_CMDLINE := \
@@ -108,25 +110,24 @@ BOARD_KERNEL_PAGESIZE := 4096
 BOARD_KERNEL_SEPARATED_DTBO := true
 BOARD_MKBOOTIMG_ARGS += --header_version $(BOARD_BOOT_HEADER_VERSION)
 BOARD_RAMDISK_USE_LZ4 := true
-TARGET_KERNEL_SOURCE := kernel/msm-5.4
-TARGET_KERNEL_CONFIG := vendor/lahaina-qgki_defconfig
-KERNEL_TOOLCHAIN := $(shell pwd)/prebuilts/clang/host/linux-x86/clang-14.0/bin
-TARGET_KERNEL_CLANG_PATH := $(shell pwd)/prebuilts/clang/host/linux-x86/clang-14.0
-TARGET_KERNEL_CLANG_COMPILE := true
-TARGET_KERNEL_CLANG_VERSION := 14.0
-#KERNEL_TOOLCHAIN := $(shell pwd)/prebuilts/clang/host/linux-x86/clang-neutron/bin
-#TARGET_KERNEL_CLANG_PATH := $(shell pwd)/prebuilts/clang/host/linux-x86/clang-neutron
-#TARGET_KERNEL_CLANG_COMPILE := true
-#TARGET_KERNEL_CLANG_VERSION := neutron
-
-# TARGET_KERNEL_NO_GCC := true
+KERNEL_PATH := device/oneplus/lunaa-kernel
+BOARD_PREBUILT_DTBIMAGE_DIR := $(KERNEL_PATH)
+BOARD_PREBUILT_DTBOIMAGE := $(BOARD_PREBUILT_DTBIMAGE_DIR)/dtbo.img
+PRODUCT_COPY_FILES += \
+    $(KERNEL_PATH)/Image:kernel
 
 # Kernel modules
-BOARD_VENDOR_KERNEL_MODULES_BLOCKLIST_FILE := $(COMMON_PATH)/modules.blocklist
-BOARD_VENDOR_KERNEL_MODULES_LOAD := $(strip $(shell cat $(COMMON_PATH)/modules.load))
-BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD := $(strip $(shell cat $(COMMON_PATH)/modules.load.recovery))
-BOOT_KERNEL_MODULES := $(strip $(shell cat $(COMMON_PATH)/modules.include.recovery))
+KERNEL_MODULE_DIR := $(KERNEL_PATH)
+KERNEL_MODULES := $(wildcard $(KERNEL_PATH)/*.ko)
+BOARD_VENDOR_KERNEL_MODULES_BLOCKLIST_FILE := $(KERNEL_PATH)/modules.blocklist
+BOARD_VENDOR_KERNEL_MODULES_LOAD := $(strip $(shell cat $(KERNEL_PATH)/modules.load))
+BOARD_BUILD_VENDOR_RAMDISK_IMAGE := true
+BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD := $(strip $(shell cat $(KERNEL_PATH)/modules.load.recovery))
+BOARD_VENDOR_KERNEL_MODULES := $(KERNEL_MODULES)
+BOOT_KERNEL_MODULES := $(strip $(shell cat $(KERNEL_PATH)/modules.include.recovery))
+BOARD_VENDOR_RAMDISK_KERNEL_MODULES := $(KERNEL_MODULE_DIR)/msm_drm.ko
 TARGET_MODULE_ALIASES += wlan.ko:qca_cld3_wlan.ko
+BOARD_VENDOR_KERNEL_MODULES := $(KERNEL_MODULES)
 
 # Lineage Health
 TARGET_HEALTH_CHARGING_CONTROL_CHARGING_PATH := /sys/class/oplus_chg/battery/mmi_charging_enable
@@ -181,7 +182,8 @@ BOOT_SECURITY_PATCH := 2024-04-05
 VENDOR_SECURITY_PATCH := $(BOOT_SECURITY_PATCH)
 
 # SEPolicy
-include device/qcom/sepolicy_vndr/SEPolicy.mk
+# include device/qcom/sepolicy_vndr/SEPolicy.mk
+include device/qcom/sepolicy_vndr-legacy-um/SEPolicy.mk
 include hardware/oplus/sepolicy/qti/SEPolicy.mk
 
 # Verified Boot
@@ -233,3 +235,7 @@ WPA_SUPPLICANT_VERSION := VER_0_8_X
 
 # Include the proprietary files BoardConfig.
 include vendor/oneplus/sm8350-common/BoardConfigVendor.mk
+
+# Statix specifics
+PRODUCT_USES_QCOM_HARDWARE := true
+PRODUCT_BOARD_PLATFORM := lahaina

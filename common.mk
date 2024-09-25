@@ -29,6 +29,7 @@ PRODUCT_PACKAGES += \
 # ANT+
 PRODUCT_PACKAGES += \
     AntHalService-Soong \
+    libantradio \
     com.dsi.ant@1.0.vendor
 
 # Atrace
