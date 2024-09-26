@@ -88,8 +88,6 @@ ODM_MANIFEST_FILES := $(COMMON_PATH)/manifest_odm.xml
 TARGET_INIT_VENDOR_LIB := //$(COMMON_PATH):libinit_oplus
 
 # Kernel
-TARGET_NO_KERNEL_OVERRIDE := true
-TARGET_NO_KERNEL := false
 BOARD_BOOT_HEADER_VERSION := 3
 BOARD_KERNEL_BASE := 0x00000000
 BOARD_KERNEL_CMDLINE := \
@@ -107,27 +105,29 @@ BOARD_KERNEL_CMDLINE := \
     iptable_raw.raw_before_defrag=1
 BOARD_KERNEL_IMAGE_NAME := Image
 BOARD_KERNEL_PAGESIZE := 4096
+TARGET_NEEDS_DTBOIMAGE := true
 BOARD_KERNEL_SEPARATED_DTBO := true
 BOARD_MKBOOTIMG_ARGS += --header_version $(BOARD_BOOT_HEADER_VERSION)
 BOARD_RAMDISK_USE_LZ4 := true
-KERNEL_PATH := device/oneplus/lunaa-kernel
-BOARD_PREBUILT_DTBIMAGE_DIR := $(KERNEL_PATH)
-BOARD_PREBUILT_DTBOIMAGE := $(BOARD_PREBUILT_DTBIMAGE_DIR)/dtbo.img
-PRODUCT_COPY_FILES += \
-    $(KERNEL_PATH)/Image:kernel
+TARGET_KERNEL_SOURCE := kernel/msm-5.4
+TARGET_KERNEL_CONFIG := vendor/lahaina-qgki_defconfig
+KERNEL_TOOLCHAIN := $(shell pwd)/prebuilts/clang/host/linux-x86/clang-14.0/bin
+TARGET_KERNEL_CLANG_PATH := $(shell pwd)/prebuilts/clang/host/linux-x86/clang-14.0
+TARGET_KERNEL_CLANG_COMPILE := true
+TARGET_KERNEL_CLANG_VERSION := 14.0
+#KERNEL_TOOLCHAIN := $(shell pwd)/prebuilts/clang/host/linux-x86/clang-neutron/bin
+#TARGET_KERNEL_CLANG_PATH := $(shell pwd)/prebuilts/clang/host/linux-x86/clang-neutron
+#TARGET_KERNEL_CLANG_COMPILE := true
+#TARGET_KERNEL_CLANG_VERSION := neutron
+
+# TARGET_KERNEL_NO_GCC := true
 
 # Kernel modules
-KERNEL_MODULE_DIR := $(KERNEL_PATH)
-KERNEL_MODULES := $(wildcard $(KERNEL_PATH)/*.ko)
-BOARD_VENDOR_KERNEL_MODULES_BLOCKLIST_FILE := $(KERNEL_PATH)/modules.blocklist
-BOARD_VENDOR_KERNEL_MODULES_LOAD := $(strip $(shell cat $(KERNEL_PATH)/modules.load))
-BOARD_BUILD_VENDOR_RAMDISK_IMAGE := true
-BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD := $(strip $(shell cat $(KERNEL_PATH)/modules.load.recovery))
-BOARD_VENDOR_KERNEL_MODULES := $(KERNEL_MODULES)
-BOOT_KERNEL_MODULES := $(strip $(shell cat $(KERNEL_PATH)/modules.include.recovery))
-BOARD_VENDOR_RAMDISK_KERNEL_MODULES := $(KERNEL_MODULE_DIR)/msm_drm.ko
+BOARD_VENDOR_KERNEL_MODULES_BLOCKLIST_FILE := $(COMMON_PATH)/modules.blocklist
+BOARD_VENDOR_KERNEL_MODULES_LOAD := $(strip $(shell cat $(COMMON_PATH)/modules.load))
+BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD := $(strip $(shell cat $(COMMON_PATH)/modules.load.recovery))
+BOOT_KERNEL_MODULES := $(strip $(shell cat $(COMMON_PATH)/modules.include.recovery))
 TARGET_MODULE_ALIASES += wlan.ko:qca_cld3_wlan.ko
-BOARD_VENDOR_KERNEL_MODULES := $(KERNEL_MODULES)
 
 # Lineage Health
 TARGET_HEALTH_CHARGING_CONTROL_CHARGING_PATH := /sys/class/oplus_chg/battery/mmi_charging_enable
