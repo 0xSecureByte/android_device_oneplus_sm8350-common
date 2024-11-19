@@ -33,13 +33,6 @@ prebuilt_etc {
 }
 
 prebuilt_etc {
-    name: "init.qcom.rc",
-    src: "init.qcom.rc",
-    sub_dir: "init/hw",
-    vendor: true,
-}
-
-prebuilt_etc {
     name: "logcat.rc",
     src: "logcat.rc",
     sub_dir: "init/hw",
@@ -67,19 +60,6 @@ prebuilt_etc {
     device_specific: true,
 }
 
-prebuilt_etc {
-    name: "ueventd.qcom.rc",
-    filename: "ueventd.rc",
-    src: "ueventd.qcom.rc",
-    vendor: true,
-}
-
-sh_binary {
-    name: "init.class_main.sh",
-    src: "init.class_main.sh",
-    vendor: true,
-}
-
 sh_binary {
     name: "init.kernel.post_boot-lahaina.sh",
     src: "init.kernel.post_boot-lahaina.sh",
@@ -101,11 +81,5 @@ sh_binary {
 sh_binary {
     name: "init.qcom.early_boot.sh",
     src: "init.qcom.early_boot.sh",
-    vendor: true,
-}
-
-sh_binary {
-    name: "init.qcom.sh",
-    src: "init.qcom.sh",
     vendor: true,
 }
