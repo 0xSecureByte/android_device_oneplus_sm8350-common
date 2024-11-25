@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # A/B
-$(call inherit-product, $(SRC_TARGET_DIR)/product/virtual_ab_ota.mk)
+$(call inherit-product, $(SRC_TARGET_DIR)/product/virtual_ab_ota/launch_with_vendor_ramdisk.mk)
 
 AB_OTA_POSTINSTALL_CONFIG += \
     RUN_POSTINSTALL_system=true \
@@ -30,9 +30,6 @@ AB_OTA_POSTINSTALL_CONFIG += \
 PRODUCT_PACKAGES += \
     checkpoint_gc \
     otapreopt_script
-
-# Apex
-$(call inherit-product, $(SRC_TARGET_DIR)/product/updatable_apex.mk)
 
 # Alert Slider
 PRODUCT_PACKAGES += \
@@ -129,7 +126,7 @@ PRODUCT_DEX_PREOPT_DEFAULT_COMPILER_FILTER := everything
 
 PRODUCT_SYSTEM_PROPERTIES += \
     dalvik.vm.dex2oat-filter=everything \
-    dalvik.vm.image-dex2oat-filter=everything
+#    dalvik.vm.image-dex2oat-filter=everything
 
 # DRM
 PRODUCT_PACKAGES += \

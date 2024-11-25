@@ -1,0 +1,1 @@
+export TARGET_BOARD_PLATFORM=lahaina
