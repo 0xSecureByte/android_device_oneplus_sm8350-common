@@ -73,6 +73,10 @@ function blob_fixup() {
             [ "$2" = "" ] && return 0
             sed -i "s/\/vendor\/lib\/liba2dpoffload.so/\/odm\/lib\/liba2dpoffload.so\x00\x00\x00/" "${2}"
             sed -i "s/\/vendor\/lib\/libssrec.so/\/odm\/lib\/libssrec.so\x00\x00\x00/" "${2}"
+            "${PATCHELF}" --replace-needed "libgui1_vendor.so" "libgui_vendor.so" "${2}"
+            ;;
+       vendor/lib/libextcamera_client.so)
+            "${PATCHELF}" --replace-needed "libgui1_vendor.so" "libgui_vendor.so" "${2}"
             ;;
      esac
 }
