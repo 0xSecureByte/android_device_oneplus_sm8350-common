@@ -1,16 +1,7 @@
-// Copyright (C) 2023 Paranoid Android
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+// Copyright (C) 2022 The LineageOS Project
+// SPDX-License-Identifier: Apache-2.0
 //
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
 
 cc_library_static {
     name: "libinit_oplus",
@@ -23,13 +14,36 @@ prebuilt_etc {
     name: "fstab.default",
     src: "fstab.default",
     vendor: true,
+    vendor_ramdisk_available: true,
+}
+
+prebuilt_etc {
+    name: "init.oplus.hw.rc",
+    src: "init.oplus.hw.rc",
+    sub_dir: "init",
+    device_specific: true,
+    recovery_available: true,
 }
 
 prebuilt_etc {
     name: "init.oplus.rc",
     src: "init.oplus.rc",
     sub_dir: "init",
+    device_specific: true,
+}
+
+prebuilt_etc {
+    name: "init.qcom.rc",
+    src: "init.qcom.rc",
+    sub_dir: "init/hw",
     vendor: true,
+}
+
+prebuilt_etc {
+    name: "init.qcom.recovery.rc",
+    src: "init.qcom.recovery.rc",
+    sub_dir: "init",
+    recovery: true,
 }
 
 prebuilt_etc {
@@ -44,4 +58,47 @@ prebuilt_etc {
     filename: "ueventd.rc",
     src: "ueventd.oplus.rc",
     device_specific: true,
+}
+
+prebuilt_etc {
+    name: "ueventd.qcom.rc",
+    filename: "ueventd.rc",
+    src: "ueventd.qcom.rc",
+    vendor: true,
+}
+
+sh_binary {
+    name: "init.class_main.sh",
+    src: "init.class_main.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "init.kernel.post_boot-lahaina.sh",
+    src: "init.kernel.post_boot-lahaina.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "init.kernel.post_boot-yupik.sh",
+    src: "init.kernel.post_boot-yupik.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "init.oplus.sh",
+    src: "init.oplus.sh",
+    device_specific: true,
+}
+
+sh_binary {
+    name: "init.qcom.early_boot.sh",
+    src: "init.qcom.early_boot.sh",
+    vendor: true,
+}
+
+sh_binary {
+    name: "init.qcom.sh",
+    src: "init.qcom.sh",
+    vendor: true,
 }

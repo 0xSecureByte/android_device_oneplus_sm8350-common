@@ -1,77 +1,144 @@
-# Copyright (C) 2023 Paranoid Android
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+# Copyright (C) 2022-2023 The LineageOS Project
 #
-#      http://www.apache.org/licenses/LICENSE-2.0
+# SPDX-License-Identifier: Apache-2.0
 #
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+
+on fs
+    # Charger
+    write /proc/fastchg_fw_update 1
+    write /proc/ui_soc_decimal 1
+
+    # Update touchpanel firmware in case we ship newer firmware in /odm
+    write /proc/touchpanel/tp_fw_update 0
+
+on early-boot
+    # Radio
+    exec_start oplus-sh
+    setprop persist.radio.multisim.config ${vendor.radio.multisim.config}
+
+    # SSR
+    write /sys/bus/msm_subsys/devices/subsys0/restart_level RELATED
+    write /sys/bus/msm_subsys/devices/subsys1/restart_level RELATED
+    write /sys/bus/msm_subsys/devices/subsys2/restart_level RELATED
+    write /sys/bus/msm_subsys/devices/subsys3/restart_level RELATED
+    write /sys/bus/msm_subsys/devices/subsys4/restart_level RELATED
+    write /sys/bus/msm_subsys/devices/subsys5/restart_level RELATED
+    write /sys/bus/msm_subsys/devices/subsys6/restart_level RELATED
+    write /sys/bus/msm_subsys/devices/subsys7/restart_level RELATED
+    write /sys/bus/msm_subsys/devices/subsys8/restart_level RELATED
+    write /sys/bus/msm_subsys/devices/subsys9/restart_level RELATED
+    write /sys/bus/msm_subsys/devices/subsys10/restart_level RELATED
 
 on boot
+    # Display
     chown system system /dev/oplus_display
     chown system system /sys/kernel/oplus_display/dimlayer_bl_en
     chown system system /sys/kernel/oplus_display/dynamic_osc_clock
     chown system system /sys/kernel/oplus_display/hbm
     chown system system /sys/kernel/oplus_display/notify_fppress
     chown system system /sys/kernel/oplus_display/panel_serial_number
-    chown system system /sys/kernel/oplus_display/power_status
 
     # Sensors
     chown system system /sys/devices/platform/soc/soc:sensor_fb/adsp_notify
 
-on fs
-    # Trigger touchpanel firmware update
-    write /proc/touchpanel/tp_fw_update 0
+    # TOF
+    chown cameraserver cameraserver /sys/kernel/tof_control/app0/alg_setting
+    chown cameraserver cameraserver /sys/kernel/tof_control/app0/app0_apply_fac_calib
+    chown cameraserver cameraserver /sys/kernel/tof_control/app0/app0_clk_iterations
+    chown cameraserver cameraserver /sys/kernel/tof_control/app0/app0_clk_trim_set
+    chown cameraserver cameraserver /sys/kernel/tof_control/app0/app0_get_distance
+    chown cameraserver cameraserver /sys/kernel/tof_control/app0/app0_get_fac_calib
+    chown cameraserver cameraserver /sys/kernel/tof_control/app0/app0_read_peak_crosstalk
+    chown cameraserver cameraserver /sys/kernel/tof_control/app0/capture
+    chown cameraserver cameraserver /sys/kernel/tof_control/app0/iterations
+    chown cameraserver cameraserver /sys/kernel/tof_control/app0/period
+    chown cameraserver cameraserver /sys/kernel/tof_control/chip_enable
+    chown cameraserver cameraserver /sys/kernel/tof_control/driver_debug
 
 on property:ro.boot.prjname=*
     # Display
     setprop ro.separate.soft ${ro.boot.prjname}
 
-# Route touch_sensitivity_mode to persist
-on property:debug.touch_polling_mode=0
-    setprop persist.vendor.touch_polling_mode 0
-
-on property:debug.touch_polling_mode=1
-    setprop persist.vendor.touch_polling_mode 1
-
-# Toggle glove mode.
-on property:persist.vendor.touch_polling_mode=0 && property:sys.boot_completed=1
-    write /proc/touchpanel/game_switch_enable "0"
-
-on property:persist.vendor.touch_polling_mode=1 && property:sys.boot_completed=1
-    write /proc/touchpanel/game_switch_enable "1"
-
-# On the NA variants we want to restrict the SIM
-# configuration to SSSS.
-on property:ro.boot.rf_version=12
-    setprop persist.radio.multisim.config ssss
-
-on property:ro.boot.rf_version=22
-    setprop persist.radio.multisim.config ssss
-
 on property:sys.boot_completed=1
-    start oplus-post-boot
+    # Display
+    copy /vendor/etc/OnePlus_QC_LTM_Commercial_SM8350_2021_01_19.pfm /mnt/vendor/persist/data/pfm/licenses/OnePlus_QC_LTM_Commercial_SM8350_2021_01_19.pfm
+    copy /vendor/etc/Oplus_QC_LTM_Commercial_SM7325_2021_05_20.pfm /mnt/vendor/persist/data/pfm/licenses/Oplus_QC_LTM_Commercial_SM7325_2021_05_20.pfm
+    copy /vendor/etc/Oplus_QC_LTM_Commercial_SM8350_2021_02_03.pfm /mnt/vendor/persist/data/pfm/licenses/Oplus_QC_LTM_Commercial_SM8350_2021_02_03.pfm
+    chown system system /mnt/vendor/persist/data/pfm/licenses/OnePlus_QC_LTM_Commercial_SM8350_2021_01_19.pfm
+    chown system system /mnt/vendor/persist/data/pfm/licenses/Oplus_QC_LTM_Commercial_SM7325_2021_05_20.pfm
+    chown system system /mnt/vendor/persist/data/pfm/licenses/Oplus_QC_LTM_Commercial_SM8350_2021_02_03.pfm
+
+    # Widevine
+    copy /vendor/etc/oplus_Widevine_licenses.pfm /mnt/vendor/persist/data/pfm/licenses/oplus_Widevine_licenses.pfm
+    chown system system /mnt/vendor/persist/data/pfm/licenses/oplus_Widevine_licenses.pfm
 
 on property:vendor.post_boot.parsed=1
+    # IRQ Tuning
+    # IRQ 243: msm_drm
+    # IRQ 240: kgsl_3d0_irq
+    write /proc/irq/243/smp_affinity_list 2
+    write /proc/irq/240/smp_affinity_list 1
+
+on property:sys.usb.config=adb && property:sys.usb.configfs=1
+    write /config/usb_gadget/g1/idVendor 0x22D9
+    write /config/usb_gadget/g1/idProduct 0x2769
+
+on property:sys.usb.config=mass_storage && property:sys.usb.configfs=1
+    write /config/usb_gadget/g1/idProduct 0x2768
+    write /config/usb_gadget/g1/idVendor 0x22D9
+
+on property:sys.usb.config=mtp && property:sys.usb.configfs=1
+    write /config/usb_gadget/g1/idVendor 0x22D9
+    write /config/usb_gadget/g1/idProduct 0x2764
+
+on property:sys.usb.config=mtp,adb && property:sys.usb.configfs=1
+    write /config/usb_gadget/g1/idVendor 0x22D9
+    write /config/usb_gadget/g1/idProduct 0x2765
+
+on property:sys.usb.config=ptp && property:sys.usb.configfs=1
+    write /config/usb_gadget/g1/idVendor 0x22D9
+    write /config/usb_gadget/g1/idProduct 0x2771
+
+on property:sys.usb.config=ptp,adb && property:sys.usb.configfs=1
+    write /config/usb_gadget/g1/idVendor 0x22D9
+    write /config/usb_gadget/g1/idProduct 0x2772
+
+on property:sys.usb.config=rndis,none && property:sys.usb.configfs=1
+    write /config/usb_gadget/g1/idVendor 0x22D9
+    write /config/usb_gadget/g1/idProduct 0x276A
+
+on property:sys.usb.config=rndis,serial_cdev,diag && property:sys.usb.configfs=1
+    write /config/usb_gadget/g1/idVendor 0x22D9
+    write /config/usb_gadget/g1/idProduct 0x2783
+
+on property:sys.usb.ffs.ready=1 && property:sys.usb.config=diag,adb && property:sys.usb.configfs=1
+    write /config/usb_gadget/g1/idVendor 0x22D9
+    write /config/usb_gadget/g1/idProduct 0x276C
+
+on property:sys.usb.ffs.ready=1 && property:sys.usb.config=diag,diag_mdm,adb && property:sys.usb.configfs=1
+    write /config/usb_gadget/g1/idVendor 0x22D9
+    write /config/usb_gadget/g1/idProduct 0x276E
+
+on property:sys.usb.ffs.ready=1 && property:sys.usb.config=mass_storage,adb && property:sys.usb.configfs=1
+    write /config/usb_gadget/g1/idVendor 0x22D9
+    write /config/usb_gadget/g1/idProduct 0x2767
+
+on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,diag,adb && property:sys.usb.configfs=1
+    write /config/usb_gadget/g1/idVendor 0x22D9
+    write /config/usb_gadget/g1/idProduct 0x2775
+
+on property:sys.usb.ffs.ready=1 && property:sys.usb.config=rndis,none,adb && property:sys.usb.configfs=1
+    write /config/usb_gadget/g1/idVendor 0x22D9
+    write /config/usb_gadget/g1/idProduct 0x2766
+
+service oplus-sh /odm/bin/init.oplus.sh
+    user root
+    group root
+    oneshot
 
 service oplus_sensor_fb /odm/bin/oplus_sensor_fb
     user system
     group system
     class late_start
     oneshot
-
-service vendor.camera-provider-2-4 /vendor/bin/hw/android.hardware.camera.provider@2.4-service_64
-    override
-    interface android.hardware.camera.provider@2.4::ICameraProvider legacy/0
-    interface vendor.qti.hardware.camera.postproc@1.0::IPostProcService camerapostprocservice
-    class hal
-    user cameraserver
-    group audio camera input drmrpc oem_2907
-    ioprio rt 4
-    capabilities SYS_NICE
-    task_profiles CameraServiceCapacity HighPerformance
