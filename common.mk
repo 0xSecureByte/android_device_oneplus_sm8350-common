@@ -43,7 +43,31 @@ PRODUCT_COPY_FILES += \
 # Audio
 PRODUCT_PACKAGES += \
     libstdc++_vendor \
-    android.hardware.audio.sounddose-vendor-impl
+    android.hardware.audio@6.0-impl \
+    android.hardware.audio.effect@6.0-impl \
+    android.hardware.audio.service \
+    android.hardware.audio.sounddose-vendor-impl \
+    android.hardware.soundtrigger@2.3-impl \
+    sound_trigger.primary.lahaina:32 \
+    audio.r_submix.default \
+    audio.usb.default \
+    audioadsprpcd \
+    liba2dpoffload \
+    libbatterylistener \
+    libcomprcapture \
+    libexthwplugin \
+    libhdmiedid \
+    libhfp \
+    libqcompostprocbundle \
+    libqcomvisualizer \
+    libqcomvoiceprocessing \
+    libsndmonitor \
+    libspkrprot \
+    libssrec \
+    libvolumelistener \
+    libaudioroute.vendor \
+    libprocessgroup.vendor \
+    android.hardware.audio.sounddose.vendor
 
 PRODUCT_VENDOR_PROPERTIES += \
     ro.config.vc_call_vol_steps=9 \
@@ -73,6 +97,18 @@ PRODUCT_COPY_FILES += \
 
 PRODUCT_PACKAGES += \
     android.hardware.biometrics.fingerprint@2.3-service.oplus
+
+# A2DP
+PRODUCT_PACKAGES += \
+    liba2dpoffload \
+    android.hardware.bluetooth.a2dp@1.0 \
+    android.hardware.bluetooth.a2dp@1.0.vendor \
+    android.hardware.bluetooth.a2dp@1.0-impl \
+    android.hardware.bluetooth.a2dp@1.0-service
+
+PRODUCT_COPY_FILES += \
+    frameworks/av/services/audiopolicy/config/a2dp_in_audio_policy_configuration_7_0.xml:$(TARGET_COPY_OUT_VENDOR)/etc/a2dp_in_audio_policy_configuration_7_0.xml
+
 
 # Bluetooth - AIDL
 TARGET_USE_AIDL_QTI_BT_AUDIO := true
@@ -109,7 +145,8 @@ PRODUCT_PACKAGES += \
     android.hardware.camera.provider@2.4-impl \
     android.hardware.camera.provider@2.4-service_64 \
     vendor.qti.hardware.camera.postproc@1.0.vendor \
-    android.frameworks.stats@1.0.vendor
+    android.frameworks.stats@1.0.vendor \
+    libutilscallstack.vendor
 
 # DPM
 PRODUCT_VENDOR_PROPERTIES += \
@@ -132,7 +169,8 @@ PRODUCT_SYSTEM_PROPERTIES += \
 PRODUCT_PACKAGES += \
     android.hardware.drm@1.4.vendor \
     android.hardware.drm-service.clearkey \
-    libcrypto_shim
+    libcrypto_shim \
+    libcrypto-v33
 
 # Dalvik
 $(call inherit-product, frameworks/native/build/phone-xhdpi-6144-dalvik-heap.mk)
@@ -235,7 +273,10 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     android.hardware.media.omx@1.0-impl \
     android.hardware.media.omx@1.0-service \
-    libstagefright_omx.vendor
+    libstagefright_omx.vendor \
+    libstagefright_softomx_plugin.vendor \
+    libstagefrighthw \
+    libstagefrighthw.vendor \
 
 PRODUCT_VENDOR_PROPERTIES += \
     debug.stagefright.c2inputsurface=-1 \
@@ -312,6 +353,8 @@ PRODUCT_COPY_FILES += \
     hardware/oplus/sensors/hals.conf:$(TARGET_COPY_OUT_VENDOR)/etc/sensors/hals.conf
 
 PRODUCT_PACKAGES += \
+    android.frameworks.sensorservice@1.0.vendor \
+    android.frameworks.sensorservice@1.0 \
     als_correction_service.lunaa \
     android.hardware.sensors@2.1-service.oplus-multihal \
     libsensorndkbridge \
